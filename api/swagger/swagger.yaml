@@ -1,0 +1,68 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: API DNA analysis
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /mutation:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: analysis 
+    post:
+      description: DNA analysis
+      operationId: checkMutation
+      parameters:
+        - in: body
+          name: dna
+          required: true
+          description: Edit root 
+          schema:
+           type: object
+      responses:
+        "200":
+          description: Success
+          schema:
+                type: object
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /stats:  
+    x-swagger-router-controller: analysis
+    get:
+      description: stats
+      # used as the method name of the controller
+      operationId: stats     
+      responses:
+        "200":
+          description: Success
+          schema:
+                type: object         
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
